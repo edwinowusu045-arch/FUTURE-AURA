@@ -1,7 +1,6 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || '';
+const API_BASE = "https://aura-backend.up.railway.app"; // Hardcoded for deployment
 
-export const API_BASE_URL_ERROR =
-  'Backend URL not configured. Set NEXT_PUBLIC_API_BASE_URL to your backend service URL.';
+export const API_BASE_URL = API_BASE;
 
 export function getApiBaseUrl() {
   return API_BASE_URL;
