@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build: ./next-app
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+    depends_on:
+      - backend
+  backend:
+    build: ./server
+    ports:
+      - '4000:4000'
+    environment:
+      - PORT=4000
+      - DATABASE_URL=file:./dev.db
+      - JWT_SECRET=supersecretdevkey
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./server:/app
+      - ./server/dev.db:/app/dev.db
+    depends_on:
+      - redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

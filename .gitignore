@@ -1,0 +1,36 @@
+# Node modules
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+**/out
+
+# local env
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+
+# Docker
+**/dev.db
+**/.dockerignore
+**/*.log
+
+# IDE
+.vscode
+.idea
+
+# generated
+package-lock.json
+
+# coverage
+coverage
+build

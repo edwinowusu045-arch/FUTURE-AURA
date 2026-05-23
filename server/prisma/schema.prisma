@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Multi-tenant: Each organization/company
+model Company {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  users    User[]
+  datasets Dataset[]
+  
+  @@map("companies")
+}
+
+// User with RBAC
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String     // bcrypt hashed
+  firstName String?
+  lastName  String?
+  role      String     @default("analyst") // admin, analyst, viewer
+  active    Boolean    @default(true)
+  
+  companyId String
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([companyId])
+  @@map("users")
+}
+
+// Phase 4: Dataset upload
+model Dataset {
+  id          String           @id @default(cuid())
+  name        String
+  fileName    String
+  fileSize    Int
+  rowCount    Int              @default(0)
+  columns     String           // JSON array of column names
+  mimeType    String           @default("text/csv")
+  
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  data        String?          // Raw CSV data (for demo, would use file storage in prod)
+  
+  analyses    AnalysisResult[]
+  
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([companyId])
+  @@map("datasets")
+}
+
+// Phase 4: AI analysis results
+model AnalysisResult {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  
+  datasetId   String
+  dataset     Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  
+  // Analysis outputs
+  summary     String?  // Natural language summary
+  insights    String?  // JSON array of insights
+  anomalies   String?  // JSON array of anomalies found
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([datasetId])
+  @@map("analysis_results")
+}

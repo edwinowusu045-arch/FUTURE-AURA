@@ -1,0 +1,17 @@
+{
+  "name": "future-aura",
+  "private": true,
+  "workspaces": [
+    "next-app",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "docker compose up --build",
+    "lint": "npm run --workspace next-app lint && npm run --workspace server lint",
+    "typecheck": "npm run --workspace next-app typecheck && npm run --workspace server typecheck",
+    "test": "npm run --workspace next-app test",
+    "db:migrate": "npm run --workspace server db:migrate",
+    "db:seed": "npm run --workspace server db:seed"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "generate:prod": "PRISMA_SCHEMA=./prisma/schema.postgres.prisma npx prisma generate",
+    "prisma:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate dev --schema ./prisma/schema.prisma --name init",
+    "db:seed": "ts-node --transpile-only prisma/seed.ts",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"No server tests configured yet.\""
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/jwt": "^10.1.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@fastify/multipart": "^8.1.0",
+    "@prisma/client": "^5.14.0",
+    "bcrypt": "^5.1.1",
+    "fastify": "^5.8.5",
+    "pino": "^8.16.0",
+    "zod": "^3.23.2",
+    "@future-aura/shared": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/pino": "^7.0.5",
+    "@types/bcrypt": "^5.0.2",
+    "eslint": "^8.57.0",
+    "prisma": "^5.14.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
+  }
+}
