@@ -5,9 +5,8 @@ services:
     plan: starter
     branch: main
     autoDeploy: true
-    root: next-app
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
+    buildCommand: cd next-app && npm install && npm run build
+    startCommand: cd next-app && npm install && npm run start
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
         value: https://aura-backend.onrender.com
@@ -19,9 +18,8 @@ services:
     plan: starter
     branch: main
     autoDeploy: true
-    root: server
-    buildCommand: npm install && PRISMA_SCHEMA=./prisma/schema.postgres.prisma npx prisma generate && npm run build
-    startCommand: npm run start
+    buildCommand: cd server && npm install && PRISMA_SCHEMA=./prisma/schema.postgres.prisma npx prisma generate && npm run build
+    startCommand: cd server && npm install && npm run start
     envVars:
       - key: DATABASE_URL
         fromDatabase: "aura-db"
