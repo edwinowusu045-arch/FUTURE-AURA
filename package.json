@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "dev": "docker compose up --build",
+    "build": "npm run build:frontend",
+    "start": "npm run start:frontend",
     "build:frontend": "npm run build --workspace next-app",
     "start:frontend": "npm run start --workspace next-app",
     "build:backend": "npm run build --workspace server",
