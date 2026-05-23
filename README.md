@@ -32,6 +32,41 @@ AURA is an enterprise-ready AI business intelligence platform built as a product
    - Frontend: `http://localhost:3000`
    - Backend API docs: `http://localhost:4000/api/docs`
 
+## Deploying with Vercel + Railway
+
+This repo is a monorepo with separate `next-app` frontend and `server` backend workspaces. The easiest deployment flow is:
+
+- Frontend: Vercel (project uses `next-app`)
+- Backend: Railway (Node.js service using `server`)
+- Database: Railway PostgreSQL
+
+### Vercel frontend setup
+
+1. Create a new project in Vercel from your GitHub repository.
+2. Set the project root directory to `next-app`.
+3. Use the install command: `npm install`.
+4. Use the build command: `npm run build`.
+5. Add the environment variable:
+   - `NEXT_PUBLIC_API_BASE_URL=https://<your-backend-url>`
+
+### Railway backend setup
+
+1. Create a new project in Railway and link the same GitHub repository.
+2. Use `server` as the service directory or configure the service from the root and use `npm run start --workspace server`.
+3. Add a PostgreSQL plugin and copy the generated `DATABASE_URL`.
+4. Add the environment variables:
+   - `DATABASE_URL` from Railway Postgres
+   - `JWT_SECRET=<strong-secret>`
+   - `FRONTEND_ORIGIN=https://<your-vercel-url>`
+   - `NODE_ENV=production`
+   - `UPLOAD_DIR=/tmp/uploads`
+
+### Why this works
+
+- Vercel builds the Next.js frontend inside `next-app`.
+- Railway runs the backend service from `server` and uses the shared workspace package.
+- The frontend points to the backend URL using `NEXT_PUBLIC_API_BASE_URL`.
+
 ## Development commands
 
 - `make dev` — run frontend, backend, and Redis using Docker Compose

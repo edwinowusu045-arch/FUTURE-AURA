@@ -134,7 +134,39 @@ If you do not own a domain, you can still use the free Render subdomain at no co
 
 ---
 
-## 9. Future improvements
+## 9. Vercel + Railway alternative
+
+If you prefer to avoid Render, this repo can also deploy with Vercel for the frontend and Railway for the backend.
+
+### Frontend on Vercel
+
+1. Create a new Vercel project from GitHub.
+2. Set the root directory to `next-app`.
+3. Set the build command to `npm run build`.
+4. Set the install command to `npm install`.
+5. Add the environment variable:
+   - `NEXT_PUBLIC_API_BASE_URL=https://<your-backend-url>`
+
+### Backend on Railway
+
+1. Create a new Railway project from GitHub.
+2. Create a new service using the `server` directory or the root repository.
+3. If Railway uses the root repository, set the start command to `npm run start --workspace server`.
+4. Add PostgreSQL using Railway's managed database plugin.
+5. Add these environment variables:
+   - `DATABASE_URL`
+   - `JWT_SECRET=<strong-secret>`
+   - `FRONTEND_ORIGIN=https://<your-vercel-url>`
+   - `NODE_ENV=production`
+   - `UPLOAD_DIR=/tmp/uploads`
+
+### Notes
+
+- Use the same `JWT_SECRET` value for production as the backend service expects.
+- The frontend communicates with the backend through `NEXT_PUBLIC_API_BASE_URL`.
+- Railway and Vercel both support GitHub auto-deploy, so pushing to `main` will trigger fresh builds.
+
+## 10. Future improvements
 
 - Add Render health checks and log forwarding
 - Add a custom domain for portfolio presentation
