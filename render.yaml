@@ -1,0 +1,38 @@
+services:
+  - name: aura-frontend
+    type: web
+    env: node
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run --workspace next-app build
+    startCommand: npm run --workspace next-app start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://aura-backend.onrender.com
+    healthCheckPath: /
+
+  - name: aura-backend
+    type: web
+    env: node
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run --workspace server build
+    startCommand: npm run --workspace server start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aura-db
+      - key: JWT_SECRET
+        generator: secret
+      - key: NODE_ENV
+        value: production
+      - key: UPLOAD_DIR
+        value: /data/uploads
+    healthCheckPath: /health
+
+databases:
+  - name: aura-db
+    plan: free
+    databaseName: aura
