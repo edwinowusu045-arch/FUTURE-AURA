@@ -3,8 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, LogIn } from 'lucide-react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { API_BASE_URL, API_BASE_URL_ERROR } from '@/lib/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('admin@acme.com');
@@ -19,6 +18,11 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      if (!API_BASE_URL) {
+        setError(API_BASE_URL_ERROR);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

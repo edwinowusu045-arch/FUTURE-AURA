@@ -3,8 +3,7 @@
 import { type ChangeEvent, type DragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Upload, FileText, Trash2, BarChart3, Loader } from 'lucide-react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { API_BASE_URL, API_BASE_URL_ERROR } from '@/lib/api';
 
 interface Dataset {
   id: string;
@@ -30,6 +29,11 @@ export default function DataRoomPage() {
       const token = localStorage.getItem('aura_token');
       if (!token) {
         router.push('/login');
+        return;
+      }
+
+      if (!API_BASE_URL) {
+        setError(API_BASE_URL_ERROR);
         return;
       }
 
@@ -69,6 +73,11 @@ export default function DataRoomPage() {
     setError('');
 
     try {
+      if (!API_BASE_URL) {
+        setError(API_BASE_URL_ERROR);
+        return;
+      }
+
       const fileContent = await file.text();
       const token = localStorage.getItem('aura_token');
 
@@ -128,6 +137,11 @@ export default function DataRoomPage() {
     if (!confirm('Are you sure you want to delete this dataset?')) return;
 
     try {
+      if (!API_BASE_URL) {
+        setError(API_BASE_URL_ERROR);
+        return;
+      }
+
       const token = localStorage.getItem('aura_token');
       const response = await fetch(`${API_BASE_URL}/api/datasets/${id}`, {
         method: 'DELETE',

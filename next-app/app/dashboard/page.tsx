@@ -4,8 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BarChart3, CircleDashed } from 'lucide-react';
 import { DashboardShell } from '@/components/ui/dashboard-shell';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { API_BASE_URL, API_BASE_URL_ERROR } from '@/lib/api';
 
 interface DatasetSummary {
   id: string;
@@ -52,6 +51,12 @@ export default function DashboardPage() {
     }
 
     try {
+      if (!API_BASE_URL) {
+        setStatus(API_BASE_URL_ERROR);
+        setLoadingDatasets(false);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/datasets`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -90,6 +95,12 @@ export default function DashboardPage() {
     await new Promise((resolve) => setTimeout(resolve, 900));
 
     try {
+      if (!API_BASE_URL) {
+        setMessage(API_BASE_URL_ERROR);
+        setAnalysisLoading(false);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/analysis/run/${datasetId}`, {
         method: 'POST',
         headers: {

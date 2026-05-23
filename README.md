@@ -49,6 +49,8 @@ This repo is a monorepo with separate `next-app` frontend and `server` backend w
 5. Add the environment variable:
    - `NEXT_PUBLIC_API_BASE_URL=https://<your-backend-url>`
 
+> Important: without `NEXT_PUBLIC_API_BASE_URL`, the frontend will attempt to call `localhost:4000` and cannot reach the backend in production.
+
 ### Railway backend setup
 
 1. Create a new project in Railway and link the same GitHub repository.

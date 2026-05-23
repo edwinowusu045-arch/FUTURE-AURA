@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader, Play, BarChart3 } from 'lucide-react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { API_BASE_URL, API_BASE_URL_ERROR } from '@/lib/api';
 
 interface Analysis {
   id: string;
@@ -56,6 +55,11 @@ export default function InsightsPage() {
           return;
         }
 
+        if (!API_BASE_URL) {
+          setError(API_BASE_URL_ERROR);
+          return;
+        }
+
         const response = await fetch(`${API_BASE_URL}/api/datasets/${datasetId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -91,6 +95,11 @@ export default function InsightsPage() {
       const token = localStorage.getItem('aura_token');
       if (!token) {
         router.push('/login');
+        return;
+      }
+
+      if (!API_BASE_URL) {
+        setError(API_BASE_URL_ERROR);
         return;
       }
 

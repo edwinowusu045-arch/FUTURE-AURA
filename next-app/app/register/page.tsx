@@ -3,8 +3,7 @@
 import { type FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Building2, ShieldCheck } from 'lucide-react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { API_BASE_URL, API_BASE_URL_ERROR } from '@/lib/api';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -22,6 +21,11 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
+      if (!API_BASE_URL) {
+        setStatus(API_BASE_URL_ERROR);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -36,7 +40,9 @@ export default function RegisterPage() {
         router.push('/dashboard');
       }
     } catch (error) {
-      setStatus('Unable to reach authentication service.');
+      setStatus(
+        API_BASE_URL ? 'Unable to reach authentication service.' : API_BASE_URL_ERROR,
+      );
     } finally {
       setLoading(false);
     }
