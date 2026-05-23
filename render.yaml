@@ -5,8 +5,9 @@ services:
     plan: starter
     branch: main
     autoDeploy: true
-    buildCommand: npm install && npm run --workspace next-app build
-    startCommand: npm run --workspace next-app start
+    root: next-app
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
         value: https://aura-backend.onrender.com
@@ -18,19 +19,20 @@ services:
     plan: starter
     branch: main
     autoDeploy: true
-    buildCommand: npm install && npm run --workspace server build
-    startCommand: npm run --workspace server start
+    root: server
+    buildCommand: npm install && PRISMA_SCHEMA=./prisma/schema.postgres.prisma npx prisma generate && npm run build
+    startCommand: npm run start
     envVars:
       - key: DATABASE_URL
-        fromDatabase: aura-db
+        fromDatabase: "aura-db"
       - key: JWT_SECRET
-        generator: secret
+        generator: "secret"
       - key: FRONTEND_ORIGIN
-        value: https://aura-frontend.onrender.com
+        value: "https://aura-frontend.onrender.com"
       - key: NODE_ENV
-        value: production
+        value: "production"
       - key: UPLOAD_DIR
-        value: /data/uploads
+        value: "/data/uploads"
     healthCheckPath: /health
 
 databases:
