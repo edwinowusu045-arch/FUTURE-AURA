@@ -34,5 +34,5 @@ services:
 
 databases:
   - name: aura-db
-    plan: free
+    plan: starter
     databaseName: aura
