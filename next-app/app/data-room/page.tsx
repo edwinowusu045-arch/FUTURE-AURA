@@ -64,11 +64,6 @@ export default function DataRoomPage() {
   }, [fetchDatasets]);
 
   async function handleFileUpload(file: File) {
-    if (!file.name.endsWith('.csv')) {
-      setError('Please upload a CSV file');
-      return;
-    }
-
     setUploading(true);
     setError('');
 
@@ -78,19 +73,45 @@ export default function DataRoomPage() {
         return;
       }
 
-      const fileContent = await file.text();
       const token = localStorage.getItem('aura_token');
 
-      const response = await fetch(`${API_BASE_URL}/api/datasets/upload`, {
+      // CSVs are handled as plain text to the CSV upload endpoint
+      if (file.name.endsWith('.csv') || file.type === 'text/csv') {
+        const fileContent = await file.text();
+
+        const response = await fetch(`${API_BASE_URL}/api/datasets/upload`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: file.name.replace('.csv', ''),
+            data: fileContent,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Upload failed');
+        }
+
+        const dataset = await response.json();
+        setDatasets((prev) => [dataset, ...prev]);
+        return;
+      }
+
+      // For PDFs and images send base64 JSON to the local upload-file endpoint
+      const arrayBuffer = await file.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+      const response = await fetch(`/api/datasets/upload-file`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: file.name.replace('.csv', ''),
-          data: fileContent,
-        }),
+        body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, name: file.name.replace(/\.[^/.]+$/, '') }),
       });
 
       if (!response.ok) {
@@ -211,15 +232,15 @@ export default function DataRoomPage() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv"
+              accept=".csv,.pdf,image/*"
               onChange={handleChange}
               className="hidden"
               disabled={uploading}
             />
             <Upload className="mx-auto h-14 w-14 text-sky-700 mb-6" />
-            <h2 className="text-2xl font-semibold mb-3 text-slate-950">Drop your CSV file here</h2>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-950">Drop your dataset here</h2>
             <p className="text-slate-600 mb-4 text-lg">or click to browse from your device</p>
-            <p className="text-sm text-slate-500">CSV files only · secure upload · <span className="font-semibold text-slate-700">max 10MB</span></p>
+            <p className="text-sm text-slate-500">CSV, PDF or image files · secure upload · <span className="font-semibold text-slate-700">max 10MB</span></p>
           </div>
           {error && <p className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700">{error}</p>}
         </div>

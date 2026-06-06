@@ -1,6 +1,9 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { csvDataSchema, analysisRunSchema } from "@future-aura/shared";
+import pdfParse from 'pdf-parse';
+import Tesseract from 'tesseract.js';
+import sharp from 'sharp';
 
 const prisma = new PrismaClient();
 
@@ -26,6 +29,67 @@ export async function datasetRoutes(server: FastifyInstance) {
   };
 
   // POST /api/datasets/upload - Upload CSV dataset
+  // POST /api/datasets/upload-file - Upload PDF or image and extract text
+  server.post('/datasets/upload-file', async (request, reply) => {
+    await verifyAuth(request, reply);
+    const user = request.user as JWTUser;
+
+    try {
+      // fastify multipart exposes file() when configured
+      const mp = await request.file();
+      if (!mp) {
+        return reply.status(400).send({ error: 'No file provided' });
+      }
+
+      const filename = mp.filename || 'upload';
+      const mimetype = mp.mimetype || '';
+      const buffer = await mp.toBuffer();
+
+      let extractedText = '';
+
+      if (mimetype === 'application/pdf' || filename.toLowerCase().endsWith('.pdf')) {
+        const data = await pdfParse(buffer as Buffer);
+        extractedText = data.text || '';
+      } else if (mimetype.startsWith('image/') || /\.(png|jpe?g|tiff|bmp)$/i.test(filename)) {
+        // normalize image and run OCR
+        const normalized = await sharp(buffer as Buffer).png().toBuffer();
+        const { data: { text } } = await Tesseract.recognize(normalized, 'eng');
+        extractedText = text || '';
+      } else {
+        return reply.status(400).send({ error: 'Unsupported file type' });
+      }
+
+      const sanitizedName = sanitizeString(filename.replace(/\.[^.]+$/, ''));
+      const sanitizedData = sanitizeString(extractedText);
+
+      const rowCount = Math.max(1, sanitizedData.split('\n').filter(Boolean).length);
+
+      const dataset = await prisma.dataset.create({
+        data: {
+          name: sanitizedName,
+          fileName: filename,
+          fileSize: buffer.length,
+          rowCount,
+          columns: JSON.stringify(['content']),
+          data: sanitizedData,
+          companyId: user.companyId,
+        },
+      });
+
+      return reply.status(201).send({
+        id: dataset.id,
+        name: dataset.name,
+        fileName: dataset.fileName,
+        rowCount: dataset.rowCount,
+        columns: ['content'],
+        createdAt: dataset.createdAt,
+      });
+    } catch (error) {
+      server.log.error(error);
+      return reply.status(500).send({ error: 'File upload failed' });
+    }
+  });
+
   server.post<{ Body: { name: string; data: string } }>(
     "/datasets/upload",
     async (request, reply) => {
