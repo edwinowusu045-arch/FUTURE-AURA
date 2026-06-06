@@ -18,7 +18,11 @@
     "lint": "npm run --workspace next-app lint && npm run --workspace server lint",
     "typecheck": "npm run --workspace next-app typecheck && npm run --workspace server typecheck",
     "test": "npm run --workspace next-app test",
+    "netlify-build": "npm run build --workspace next-app",
     "db:migrate": "npm run --workspace server db:migrate",
     "db:seed": "npm run --workspace server db:seed"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.11"
   }
 }

@@ -14,6 +14,7 @@
   "dependencies": {
     "@future-aura/shared": "*",
     "@tailwindcss/typography": "^0.5.9",
+    "helmet": "^7.1.0",
     "lucide-react": "^0.473.0",
     "next": "^14.2.5",
     "react": "^18.3.1",

@@ -4,13 +4,13 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'AURA | AI Business Intelligence',
-  description: 'A modern business intelligence platform for startups and growth teams.'
+  description: 'A modern business intelligence platform for investment-grade data and AI insights.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
+      <body className="min-h-screen bg-slate-50 text-slate-950 antialiased">
         {children}
       </body>
     </html>

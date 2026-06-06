@@ -14,7 +14,8 @@ import { datasetRoutes } from './routes/datasets';
 const app = Fastify({ logger: { level: process.env.LOG_LEVEL || 'info' } });
 
 const port = Number(process.env.PORT || 4000);
-const origin = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
+const frontendOrigin = process.env.FRONTEND_ORIGIN || 'https://future-aura-next-app-dvuy-dliwcgyyk.vercel.app';
+const origin = frontendOrigin;
 const jwtSecret = process.env.JWT_SECRET || 'supersecretdevkey';
 
 async function buildServer() {
@@ -35,10 +36,11 @@ async function buildServer() {
     crossOriginEmbedderPolicy: false,
   });
   await app.register(cors, {
-    origin,
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
+  app.log.info(`CORS is configured: allowing requests from any origin for frontend testing. Debug origin value: ${frontendOrigin}`);
   await app.register(jwt, { secret: jwtSecret });
   await app.register(rateLimit, {
     max: 90,

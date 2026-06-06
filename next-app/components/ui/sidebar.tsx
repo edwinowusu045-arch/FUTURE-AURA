@@ -5,19 +5,17 @@ const items = [
   { label: 'Overview', href: '/dashboard', icon: PieChart },
   { label: 'Login', href: '/login', icon: Lock },
   { label: 'Home', href: '/', icon: Home },
-  { label: 'Docs', href: 'http://localhost:4000/api/docs', icon: Sparkles, external: true }
+  { label: 'Docs', href: 'http://localhost:4000/api/docs', icon: Sparkles, external: true },
 ];
 
 export function Sidebar() {
   return (
-    <aside className="flex min-h-screen flex-col border-r border-white/10 bg-slate-950/95 p-6 xl:px-8">
+    <aside className="flex min-h-screen flex-col border-r border-slate-200 bg-slate-50 p-6 xl:px-8">
       <div className="mb-10 flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-300">
-          A
-        </div>
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-700 text-white shadow-sm">A</div>
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Future Aura</p>
-          <p className="text-sm text-slate-300">BI workspace</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-sky-700">Future Aura</p>
+          <p className="text-sm text-slate-600">BI workspace</p>
         </div>
       </div>
       <nav className="space-y-2">
@@ -28,9 +26,9 @@ export function Sidebar() {
               key={item.label}
               href={item.href}
               target={item.external ? '_blank' : undefined}
-              className="flex items-center gap-3 rounded-3xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-violet-400 hover:bg-slate-900"
+              className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:bg-slate-50"
             >
-              <Icon className="h-4 w-4 text-violet-300" />
+              <Icon className="h-4 w-4 text-sky-700" />
               {item.label}
             </Link>
           );
