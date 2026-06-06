@@ -40,23 +40,6 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10">
-        <header className="flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="flex items-center gap-3 text-slate-900">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-700 text-white shadow-sm">A</div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-sky-700">AURA</p>
-                <p className="text-sm text-slate-500">AI Business Intelligence</p>
-              </div>
-            </div>
-          </div>
-          <nav className="flex flex-wrap items-center gap-6 text-sm font-medium text-slate-600">
-            <Link href="/" className="transition hover:text-slate-900">Home</Link>
-            <Link href="/data-room" className="transition hover:text-slate-900">Data Room</Link>
-            <Link href="/dashboard" className="transition hover:text-slate-900">Dashboard</Link>
-            <Link href="/insights" className="transition hover:text-slate-900">Insights</Link>
-          </nav>
-        </header>
 
         <section className="grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-8">
